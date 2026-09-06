@@ -34,10 +34,11 @@ class VacancyListCreateView(ListCreateAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancySerialisers
     permission_classes = [IsEmployerOrReadOnly]
-    django_filter = [DjangoFilterBackend,SearchFilter,OrderingFilter]
+    filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
     filterset_fields = ['title','city']
-    search_filter = ['title','description']
+    search_fields = ['title','description']
     ordering_fields = ['salary_to', 'created_at']
+
 class VacancyRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancySerialisers
@@ -46,10 +47,11 @@ class VacancyRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
 class EmployerListCreateView(ListCreateAPIView):
     queryset = Employer.objects.all()
     serializer_class = EmployerSerialisers
-    django_filter = [DjangoFilterBackend,OrderingFilter,SearchFilter]
+    filter_backends = [DjangoFilterBackend,OrderingFilter,SearchFilter]
     filterset_fields = ['user','city']
-    search_filter = ['user','description']
+    search_fields = ['user','description']
     ordering_fields = ['company_name', 'user']
+
 class EmployerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Employer.objects.all()
     serializer_class = EmployerSerialisers
@@ -57,8 +59,9 @@ class EmployerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
 class CategoryListCreateView(ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    django_filter = [DjangoFilterBackend,OrderingFilter,SearchFilter]
+    filter_backends = [DjangoFilterBackend,OrderingFilter,SearchFilter]
     ordering_fields = ['name']
+
 class CategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -66,10 +69,12 @@ class CategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
 class ApplicantListCreateView(ListCreateAPIView):
     queryset = Applicant.objects.all()
     serializer_class = ApplicantSerialisers
-    django_filter = [DjangoFilterBackend,OrderingFilter,SearchFilter]
+    filter_backends = [DjangoFilterBackend,OrderingFilter,SearchFilter]
     filterset_fields = ['user','city']
-    search_filter = ['user','phone']
+    search_fields = ['user','phone']
     ordering_fields = ['user', 'city']
+
+
 class ApplicantRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Applicant.objects.all()
     serializer_class = ApplicantSerialisers
@@ -78,10 +83,11 @@ class ResumeListCreateView(ListCreateAPIView):
     queryset = Resume.objects.all()
     serializer_class = ResumeSerialisers
     permission_classes = [IsApplicantOrReadOnly]
-    django_filter = [DjangoFilterBackend,OrderingFilter,SearchFilter]
+    filter_backends = [DjangoFilterBackend,OrderingFilter,SearchFilter]
     filterset_fields = ['profession','skills']
-    search_filter = ['profession','experience']
+    search_fields = ['profession','experience']
     ordering_fields = ['experience', 'expected_salary']
+    
 class ResumeRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Resume.objects.all()
     serializer_class = ResumeSerialisers
@@ -174,5 +180,4 @@ def logout (request):
     return Response({
         'massages':'Не был авторизован!'
     })
-
 
