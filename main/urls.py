@@ -18,6 +18,7 @@ from .views import (
     FavoriteListCreateView,
     ApplicationListCreateView,
     ApplicationRetrieveUpdateDestroyAPIView,
+    StatisticView,
 )
 
 urlpatterns = [
@@ -54,4 +55,7 @@ urlpatterns = [
         ApplicationRetrieveUpdateDestroyAPIView.as_view(),
         name='application-detail'
     ),
+
+    path('statistics/', StatisticView.as_view()),
+
 ]

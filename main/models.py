@@ -99,16 +99,13 @@ class Favorite(models.Model):
         return f'{self.user} → {self.vacancy}'
 
 class Application(models.Model):
-    applicant = models.ForeignKey(
-        Applicant,
-        on_delete=models.CASCADE
-    )
+    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE)
+    vacancy = models.ForeignKey(Vacancy,on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    vacancy = models.ForeignKey(
-        Vacancy,
-        on_delete=models.CASCADE
-    )
-
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+class Statistic(models.Model):
+    vacancies = models.PositiveIntegerField(default=0)
+    applicants = models.PositiveIntegerField(default=0)
+    employers = models.PositiveIntegerField(default=0)
+    applications = models.PositiveIntegerField(default=0)
+    user = models.PositiveIntegerField(default=0)

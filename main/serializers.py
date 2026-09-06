@@ -8,7 +8,8 @@ from .models import (
     Applicant,
     Resume,
     Favorite,
-    Application
+    Application,
+    Statistic,
 )
 class Register(serializers.ModelSerializer):
     username = serializers.CharField(max_length = 150)
@@ -109,3 +110,9 @@ class ApplicationSerializers(serializers.ModelSerializer):
         model = Application
         fields = '__all__'
         read_only_fields = ['applicant', 'created_at']
+class StatisticSetialisers(serializers.ModelSerializer):
+
+    class Meta:
+        model = Statistic
+        fields = '__all__'
+    

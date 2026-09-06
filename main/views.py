@@ -3,11 +3,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView,ListAPIView
 from .permissions import IsEmployerOrReadOnly,IsApplicantOrReadOnly
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
 
 from .models import (
     Vacancy,
@@ -17,6 +18,7 @@ from .models import (
     Resume,
     Favorite,
     Application,
+    Statistic,
 )
 from .serializers import (
     Register,
@@ -27,8 +29,23 @@ from .serializers import (
     EmployerSerialisers,
     FavoriteSerializer,
     CategorySerializer,
-    ApplicationSerializers
+    ApplicationSerializers,
+    StatisticSetialisers,
 )
+
+class StatisticView(ListAPIView):
+
+    def list(self, request, *args, **kwargs):
+
+        static = {
+            'vacancies': Vacancy.objects.count(),
+            'applicants': Applicant.objects.count(),
+            'employers': Employer.objects.count(),
+            'applications': Application.objects.count(),
+            'user':User.objects.count()
+        }
+        return Response(static)
+
 
 class VacancyListCreateView(ListCreateAPIView):
     queryset = Vacancy.objects.all()
