@@ -109,3 +109,4 @@ class Statistic(models.Model):
     employers = models.PositiveIntegerField(default=0)
     applications = models.PositiveIntegerField(default=0)
     user = models.PositiveIntegerField(default=0)
+

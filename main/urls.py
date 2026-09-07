@@ -44,18 +44,7 @@ urlpatterns = [
     path('favorites/',FavoriteListCreateView.as_view()),
     path('favorites/<int:pk>/',FavoriteUpdateDestroyAPIView.as_view()),
 
-    path(
-    'applications/',
-    ApplicationListCreateView.as_view(),
-    name='application-list-create'
-    ),
-
-    path(
-        'applications/<int:pk>/',
-        ApplicationRetrieveUpdateDestroyAPIView.as_view(),
-        name='application-detail'
-    ),
-
+    path('applications/',ApplicationListCreateView.as_view(),name='application-list-create'),
+    path('applications/<int:pk>/',ApplicationRetrieveUpdateDestroyAPIView.as_view(),name='application-detail'),
     path('statistics/', StatisticView.as_view()),
-
 ]

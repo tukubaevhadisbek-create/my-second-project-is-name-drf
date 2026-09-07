@@ -46,7 +46,6 @@ class StatisticView(ListAPIView):
         }
         return Response(static)
 
-
 class VacancyListCreateView(ListCreateAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancySerialisers
