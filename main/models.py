@@ -35,14 +35,23 @@ class Vacancy(models.Model):
         on_delete=models.CASCADE,
         related_name='vacancies',
     )
-
+    STATUS_CHOICES = [
+        ('active', 'Актуальна'),
+        ('closed', 'Вакансия закрыта'),
+        ('paused', 'Приостановлена'),
+    ]
     title = models.CharField(max_length=200,verbose_name='Работа')
     description = models.TextField(verbose_name='Описание')
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        verbose_name='Статус отклика'
+    )
     city = models.CharField(max_length=100,)
     salary_from = models.PositiveIntegerField(verbose_name='Минимальная зарплата',blank=True,null=True)
     salary_to = models.PositiveIntegerField(verbose_name='Максимальная зарплата',blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
     class Meta:
         verbose_name = 'Ваканции'
         verbose_name_plural = 'Ваканции'
@@ -99,8 +108,29 @@ class Favorite(models.Model):
         return f'{self.user} → {self.vacancy}'
 
 class Application(models.Model):
-    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE)
-    vacancy = models.ForeignKey(Vacancy,on_delete=models.CASCADE)
+
+    STATUS_CHOICES = [
+        ('pending', 'На рассмотрении'),
+        ('accepted', 'Принят'),
+        ('rejected', 'Отклонён'),
+    ]
+
+    applicant = models.ForeignKey(Applicant, on_delete=models.CASCADE)
+    employer = models.ForeignKey(Employer,on_delete=models.CASCADE)
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
+    message = models.TextField(verbose_name='Сообщение')
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        verbose_name='Статус отклика'
+    )
+
+    employer_response = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Ответ работодателя'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Statistic(models.Model):

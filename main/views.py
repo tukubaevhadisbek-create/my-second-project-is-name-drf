@@ -3,12 +3,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView,ListAPIView
+from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView,ListAPIView,RetrieveUpdateAPIView
 from .permissions import IsEmployerOrReadOnly,IsApplicantOrReadOnly
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
+from rest_framework import viewsets
+from rest_framework.viewsets import ViewSet
 
 from .models import (
     Vacancy,
@@ -29,9 +31,14 @@ from .serializers import (
     EmployerSerialisers,
     FavoriteSerializer,
     CategorySerializer,
-    ApplicationSerializers,
+    ApplicationSerializer,
     StatisticSetialisers,
+
 )
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 class StatisticView(ListAPIView):
 
@@ -51,10 +58,9 @@ class VacancyListCreateView(ListCreateAPIView):
     serializer_class = VacancySerialisers
     permission_classes = [IsEmployerOrReadOnly]
     filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
-    filterset_fields = ['title','city']
-    search_fields = ['title','description']
+    filterset_fields = ['title','status']
+    search_fields = ['city','description']
     ordering_fields = ['salary_to', 'created_at']
-
 class VacancyRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancySerialisers
@@ -72,15 +78,14 @@ class EmployerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Employer.objects.all()
     serializer_class = EmployerSerialisers
 
-class CategoryListCreateView(ListCreateAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    filter_backends = [DjangoFilterBackend,OrderingFilter,SearchFilter]
-    ordering_fields = ['name']
-
-class CategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+# class CategoryListCreateView(ListCreateAPIView):
+#     queryset = Category.objects.all()
+#     serializer_class = CategorySerializer
+#     filter_backends = [DjangoFilterBackend,OrderingFilter,SearchFilter]
+#     ordering_fields = ['name']
+# class CategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+#     queryset = Category.objects.all()
+#     serializer_class = CategorySerializer
 
 class ApplicantListCreateView(ListCreateAPIView):
     queryset = Applicant.objects.all()
@@ -103,7 +108,6 @@ class ResumeListCreateView(ListCreateAPIView):
     filterset_fields = ['profession','skills']
     search_fields = ['profession','experience']
     ordering_fields = ['experience', 'expected_salary']
-    
 class ResumeRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Resume.objects.all()
     serializer_class = ResumeSerialisers
@@ -124,7 +128,7 @@ class FavoriteUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         return Favorite.objects.filter(user=self.request.user)
     
 class ApplicationListCreateView(ListCreateAPIView):
-    serializer_class = ApplicationSerializers
+    serializer_class = ApplicationSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -136,13 +140,15 @@ class ApplicationListCreateView(ListCreateAPIView):
         serializer.save(
             applicant=self.request.user.applicant
         )
-class ApplicationRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = ApplicationSerializers
+    
+class ApplicationDetailView(RetrieveUpdateAPIView):
+    queryset = Application.objects.all()
+    serializer_class = ApplicationSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Application.objects.filter(
-            applicant=self.request.user.applicant
+            employer=self.request.user.employer
         )
     
 @api_view(['POST'])

@@ -1,5 +1,5 @@
-from django.urls import path
-
+from django.urls import path,include
+from rest_framework.routers import DefaultRouter
 from .views import (
     register,
     login,
@@ -8,8 +8,8 @@ from .views import (
     VacancyRetrieveUpdateDestroyAPIView,
     EmployerListCreateView,
     EmployerRetrieveUpdateDestroyAPIView,
-    CategoryListCreateView,
-    CategoryRetrieveUpdateDestroyAPIView,
+    # CategoryListCreateView,
+    # CategoryRetrieveUpdateDestroyAPIView,
     ApplicantListCreateView,
     ApplicantRetrieveUpdateDestroyAPIView,
     ResumeListCreateView,
@@ -17,9 +17,13 @@ from .views import (
     FavoriteUpdateDestroyAPIView,
     FavoriteListCreateView,
     ApplicationListCreateView,
-    ApplicationRetrieveUpdateDestroyAPIView,
     StatisticView,
+    CategoryViewSet,
+    ApplicationDetailView
 )
+router =DefaultRouter()
+router.register(r'category',CategoryViewSet)
+
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -32,8 +36,8 @@ urlpatterns = [
     path('employers/', EmployerListCreateView.as_view(), name='employer-list-create'),
     path('employers/<int:pk>/', EmployerRetrieveUpdateDestroyAPIView.as_view(), name='employer-detail'),
 
-    path('categories/', CategoryListCreateView.as_view(), name='category-list-create'),
-    path('categories/<int:pk>/', CategoryRetrieveUpdateDestroyAPIView.as_view(), name='category-detail'),
+    # path('categories/', CategoryListCreateView.as_view(), name='category-list-create'),
+    # path('categories/<int:pk>/', CategoryRetrieveUpdateDestroyAPIView.as_view(), name='category-detail'),
 
     path('applicants/', ApplicantListCreateView.as_view(), name='applicant-list-create'),
     path('applicants/<int:pk>/', ApplicantRetrieveUpdateDestroyAPIView.as_view(), name='applicant-detail'),
@@ -45,6 +49,10 @@ urlpatterns = [
     path('favorites/<int:pk>/',FavoriteUpdateDestroyAPIView.as_view()),
 
     path('applications/',ApplicationListCreateView.as_view(),name='application-list-create'),
-    path('applications/<int:pk>/',ApplicationRetrieveUpdateDestroyAPIView.as_view(),name='application-detail'),
     path('statistics/', StatisticView.as_view()),
+    path('applications/<int:pk>/',ApplicationDetailView.as_view(),name='application-detail'),
+
+
+    path('',include(router.urls))
 ]
+
