@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView,ListAPIView,RetrieveUpdateAPIView
-from .permissions import IsEmployerOrReadOnly,IsApplicantOrReadOnly
+from .permissions import IsEmployerOrReadOnly,IsApplicantOrReadOnly,IsApplicant,IsEmployer
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
@@ -33,7 +33,7 @@ from .serializers import (
     CategorySerializer,
     ApplicationSerializer,
     StatisticSetialisers,
-
+    EmployerApplicationSerializer,
 )
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -128,23 +128,54 @@ class FavoriteUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         return Favorite.objects.filter(user=self.request.user)
     
 class ApplicationListCreateView(ListCreateAPIView):
+
     serializer_class = ApplicationSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsApplicant]
 
     def get_queryset(self):
         return Application.objects.filter(
             applicant=self.request.user.applicant
+        ).select_related(
+            'vacancy',
+            'employer',
+            'applicant'
         )
 
     def perform_create(self, serializer):
+        vacancy = serializer.validated_data['vacancy']
+
         serializer.save(
-            applicant=self.request.user.applicant
+            applicant=self.request.user.applicant,
+            employer=vacancy.employer
         )
-    
-class ApplicationDetailView(RetrieveUpdateAPIView):
-    queryset = Application.objects.all()
-    serializer_class = ApplicationSerializer
-    permission_classes = [IsAuthenticated]
+
+
+class EmployerApplicationListView(ListAPIView):
+
+    serializer_class = EmployerApplicationSerializer
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def get_queryset(self):
+        return Application.objects.filter(
+            employer=self.request.user.employer
+        ).select_related(
+            'vacancy',
+            'applicant',
+            'applicant__user'
+        )
+
+
+class EmployerApplicationDetailView(RetrieveUpdateAPIView):
+
+    serializer_class = EmployerApplicationSerializer
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    http_method_names = [
+        'get',
+        'patch',
+        'head',
+        'options',
+    ]
 
     def get_queryset(self):
         return Application.objects.filter(

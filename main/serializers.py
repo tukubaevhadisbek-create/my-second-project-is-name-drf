@@ -105,10 +105,54 @@ class FavoriteSerializer(serializers.ModelSerializer):
         read_only_fields = ['user', 'created_at']
 
 class ApplicationSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Application
-        fields = '__all__'
-        read_only_fields = ['applicant', 'employer', 'status']
+        fields = [
+            'id',
+            'applicant',
+            'employer',
+            'vacancy',
+            'message',
+            'status',
+            'employer_response',
+            'created_at',
+        ]
+
+        read_only_fields = [
+            'id',
+            'applicant',
+            'employer',
+            'status',
+            'employer_response',
+            'created_at',
+        ]
+
+
+class EmployerApplicationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Application
+        fields = [
+            'id',
+            'applicant',
+            'employer',
+            'vacancy',
+            'message',
+            'status',
+            'employer_response',
+            'created_at',
+        ]
+
+        read_only_fields = [
+            'id',
+            'applicant',
+            'employer',
+            'vacancy',
+            'message',
+            'employer_response',
+            'created_at',
+        ]
         
 class StatisticSetialisers(serializers.ModelSerializer):
 

@@ -19,7 +19,8 @@ from .views import (
     ApplicationListCreateView,
     StatisticView,
     CategoryViewSet,
-    ApplicationDetailView
+    EmployerApplicationListView,
+    EmployerApplicationDetailView,
 )
 router =DefaultRouter()
 router.register(r'category',CategoryViewSet)
@@ -47,12 +48,10 @@ urlpatterns = [
 
     path('favorites/',FavoriteListCreateView.as_view()),
     path('favorites/<int:pk>/',FavoriteUpdateDestroyAPIView.as_view()),
-
     path('applications/',ApplicationListCreateView.as_view(),name='application-list-create'),
+    path('employer/applications/',EmployerApplicationListView.as_view(),name='employer-application-list'),
+    path('employer/applications/<int:pk>/',EmployerApplicationDetailView.as_view(),name='employer-application-detail'),
     path('statistics/', StatisticView.as_view()),
-    path('applications/<int:pk>/',ApplicationDetailView.as_view(),name='application-detail'),
-
-
     path('',include(router.urls))
 ]
 
